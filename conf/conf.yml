@@ -1,5 +1,5 @@
 port: "6789"
-file_root: ./file_root/ # Root directory for the storage, must be end of a '/'
+file_root: ./file_root/ # Root directory for the storage, must end with '/'
 
 mysql_host: localhost
 mysql_port: 3306 #数字,非字符串
