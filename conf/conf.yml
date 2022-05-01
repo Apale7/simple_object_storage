@@ -1,0 +1,8 @@
+port: "6789"
+file_root: ./file_root/ # Root directory for the storage, must be end of a '/'
+
+mysql_host: localhost
+mysql_port: 3306#数字,非字符串
+mysql_user: root
+mysql_password: rootroot
+mysql_db: object_storage
