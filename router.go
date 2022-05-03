@@ -11,7 +11,9 @@ func register(r *gin.Engine) {
 	{
 		api.POST("/upload", handler.UniqueFile, handler.UploadFile)
 		api.POST("/share", handler.ShareFile)
-		api.GET("/download", handler.DownloadBySharing)
+		api.GET("/download/share", handler.DownloadBySharing)
+		api.GET("/download/self", handler.FileExist, handler.DownloadSelf)
 		api.GET("/file/list", handler.FileList)
 	}
+	r.GET("/list", handler.ListPage)
 }

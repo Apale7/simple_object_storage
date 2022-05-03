@@ -2,6 +2,8 @@ package handler
 
 import (
 	"fmt"
+	"net/url"
+	"strconv"
 
 	"Apale7/simple_object_storage/dal/redis"
 	"Apale7/simple_object_storage/model"
@@ -33,14 +35,50 @@ func DownloadBySharing(c *gin.Context) {
 	downloadFile(c, linkID)
 }
 
+func DownloadSelf(c *gin.Context) {
+	fileID, ok := c.GetQuery("file_id")
+	if !ok {
+		utils.RetErr(c, fmt.Errorf("file_id is required"))
+		return
+	}
+	fileIDInt, err := strconv.ParseUint(fileID, 10, 32)
+	if err != nil {
+		utils.RetErr(c, fmt.Errorf("file_id is invalid"))
+		return
+	}
+	downloadFile(c, fileIDInt)
+}
+
 func downloadFile(c *gin.Context, linkID uint64) {
 	link, err := service.GetFileLink(c, uint(linkID))
 	if err != nil {
 		utils.RetErr(c, err)
 		return
 	}
-	c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", link.Filename)) // fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
+	
+	c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", url.QueryEscape(link.Filename))) // fmt.Sprintf("attachment; filename=%s", filename)对下载的文件重命名
 	c.Writer.Header().Add("Content-Type", "application/octet-stream")
-	// c.String(200, "asd")
 	c.File(base + link.FileUUID)
+}
+
+func FileExist(c *gin.Context) {
+	fileID, ok := c.GetQuery("file_id")
+	if !ok {
+		utils.RetErr(c, fmt.Errorf("file_id is required"))
+		c.Abort()
+		return
+	}
+	fileIDInt, err := strconv.ParseUint(fileID, 10, 32)
+	if err != nil {
+		utils.RetErr(c, fmt.Errorf("file_id is invalid"))
+		c.Abort()
+		return
+	}
+	link, err := service.GetFileLink(c, uint(fileIDInt))
+	if err != nil {
+		utils.RetErr(c, err)
+		c.Abort()
+		return
+	}
+	c.Set("file_link", link)
 }

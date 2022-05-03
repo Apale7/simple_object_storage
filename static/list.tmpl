@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<meta charset="UTF-8">
+<title>list</title>
+
+<body>
+    <table border="1">
+        <tr>
+            <th>文件id</th>
+            <th>文件名</th>
+            <th>所有者</th>
+            <th>文件大小KiB</th>
+        </tr>
+        {{range $key, $value :=.files}}
+        <tr>
+            <td>{{$value.id}}</td>
+            <td>{{$value.filename}}</td>
+            <td>{{$value.username}}</td>
+            <td>{{$value.size}}</td>
+        </tr>
+        {{end}}
+    </table>
+</body>
+
+</html>

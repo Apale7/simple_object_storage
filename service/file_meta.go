@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"Apale7/simple_object_storage/dal/mysql"
@@ -19,13 +20,15 @@ func GetFileMeta(ctx context.Context, uuid string) (*mysql_model.FileMeta, error
 	return &metas[0], nil
 }
 
+var ErrLinkNotFound = errors.New("link not found")
+
 func GetFileLink(ctx context.Context, linkID uint) (*mysql_model.FileLink, error) {
 	links, err := mysql.GetFileLink(ctx, mysql.ID(linkID))
 	if err != nil {
 		return nil, err
 	}
 	if len(links) == 0 {
-		return nil, fmt.Errorf("link not found")
+		return nil, ErrLinkNotFound
 	}
 	return &links[0], nil
 }
